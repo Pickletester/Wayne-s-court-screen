@@ -1,4 +1,5 @@
 {
-  "image": "ad.jpg",
-  "bg": "#000000"
+  "image": "ad.png",
+  "bg": "#000000",
+  "fit": "contain"
 }
