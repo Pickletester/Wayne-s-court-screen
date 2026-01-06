@@ -1,12 +1,18 @@
-<!doctype html>
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Advertisement</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <!-- Samsung TV browsers are more reliable with full reloads -->
-  <meta http-equiv="refresh" content="30">
+  <!-- Strong anti-cache headers for Samsung TV browsers -->
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+
+  <!-- Force full page reload every 30 seconds -->
+  <meta http-equiv="refresh" content="30" />
+
+  <title>Ad Screen</title>
 
   <style>
     html, body {
@@ -21,7 +27,7 @@
     img {
       width: 100vw;
       height: 100vh;
-      object-fit: contain; /* change to cover if you want full bleed */
+      object-fit: contain; /* change to cover for full-bleed */
       display: block;
       background: #000;
     }
@@ -29,7 +35,7 @@
 </head>
 <body>
 
-  <!-- Image auto-cache-busted on every load -->
+  <!-- Image reloads fresh every page refresh -->
   <img
     src="ad.png"
     alt="Advertisement"
