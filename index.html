@@ -3,66 +3,53 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Live Screen</title>
+  <title>Ad Screen</title>
   <style>
-    html, body { margin:0; height:100%; background:#000; font-family:Arial, Helvetica, sans-serif; }
-    .wrap{
-      height:100%;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      padding:4vw;
-      box-sizing:border-box;
-      color:#fff;
+    html, body { margin:0; height:100%; background:#000; overflow:hidden; }
+    #ad {
+      position:fixed; inset:0;
+      width:100vw; height:100vh;
+      object-fit: contain; /* will be overridden by JSON fit */
+      background:#000;
     }
-    .card{
-      width:100%;
-      max-width:1600px;
-      border-radius:24px;
-      padding:5vw;
-      box-sizing:border-box;
-      background:#0b2a4a;
-      box-shadow:0 12px 40px rgba(0,0,0,.45);
+    #stamp{
+      position:fixed; left:28px; bottom:22px;
+      font: 600 28px/1.2 Arial, Helvetica, sans-serif;
+      color: rgba(255,255,255,.65);
+      text-shadow: 0 2px 10px rgba(0,0,0,.55);
     }
-    .court{ font-size:6vw; font-weight:800; letter-spacing:.02em; }
-    .now{ font-size:4.5vw; margin-top:2vw; font-weight:700; }
-    .note{ font-size:2.5vw; margin-top:1.5vw; opacity:.9; }
-    .next{ font-size:2.8vw; margin-top:3vw; font-weight:700; opacity:.95; }
-    .small{ margin-top:3vw; font-size:1.6vw; opacity:.7; }
   </style>
 </head>
 <body>
-  <div class="wrap">
-    <div class="card" id="card">
-      <div class="court" id="court">Loading…</div>
-      <div class="now" id="now"></div>
-      <div class="note" id="note"></div>
-      <div class="next" id="next"></div>
-      <div class="small" id="updated"></div>
-    </div>
-  </div>
+  <img id="ad" alt="ad" />
+  <div id="stamp"></div>
 
   <script>
-    const REFRESH_MS = 8000; // change to 5000 if you want faster
+    const REFRESH_MS = 8000;
+
     async function pull() {
       try {
-        // cache-bust so TVs don’t “stick” on old data
+        // cache-bust JSON
         const res = await fetch("status.json?t=" + Date.now(), { cache: "no-store" });
         const data = await res.json();
 
-        document.getElementById("court").textContent = data.court ?? "";
-        document.getElementById("now").textContent   = data.now ?? "";
-        document.getElementById("note").textContent  = data.note ?? "";
-        document.getElementById("next").textContent  = data.next ?? "";
-        document.getElementById("card").style.background = data.bg ?? "#0b2a4a";
+        document.body.style.background = data.bg || "#000";
 
-        document.getElementById("updated").textContent =
+        const img = document.getElementById("ad");
+        img.style.objectFit = (data.fit === "cover") ? "cover" : "contain";
+
+        if (data.image) {
+          // cache-bust image too
+          img.src = data.image + "?t=" + Date.now();
+        }
+
+        document.getElementById("stamp").textContent =
           "Last checked: " + new Date().toLocaleTimeString();
       } catch (e) {
-        document.getElementById("updated").textContent =
-          "Offline / waiting to reconnect…";
+        document.getElementById("stamp").textContent = "Offline / waiting…";
       }
     }
+
     pull();
     setInterval(pull, REFRESH_MS);
   </script>
